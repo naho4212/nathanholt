@@ -6,12 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "ingest": "tsx scripts/ingest.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",
     "@calcom/embed-react": "^1.5.3",
-    "ai": "^6.0.168",
+    "@supabase/supabase-js": "^2.105.0",
+    "@xenova/transformers": "^2.17.2",
+"dotenv": "^17.4.2",
     "next": "16.2.4",
     "react": "19.2.4",
     "react-dom": "19.2.4"
@@ -24,6 +27,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.4",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

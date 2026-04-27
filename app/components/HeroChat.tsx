@@ -10,12 +10,27 @@ const CHIPS = [
   { label: "Opinions", icon: "❋", prompt: "What's a take you'd defend the hardest?" },
 ];
 
+function getOrCreateId(key: string): string {
+  const existing = localStorage.getItem(key);
+  if (existing) return existing;
+  const id = crypto.randomUUID();
+  localStorage.setItem(key, id);
+  return id;
+}
+
 export default function HeroChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isStreaming, setIsStreaming] = useState(false);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const threadRef = useRef<HTMLDivElement>(null);
+  const sessionId = useRef<string>(crypto.randomUUID());
+  const visitorId = useRef<string>("");
+
+  // Init visitor ID from localStorage (runs once, client-only)
+  useEffect(() => {
+    visitorId.current = getOrCreateId("nh_visitor_id");
+  }, []);
 
   // Scroll thread to bottom on new content
   useEffect(() => {
@@ -43,7 +58,7 @@ export default function HeroChat() {
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history }),
+        body: JSON.stringify({ messages: history, sessionId: sessionId.current, visitorId: visitorId.current }),
       });
       if (!res.ok) throw new Error(`${res.status}`);
 

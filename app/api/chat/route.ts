@@ -1,80 +1,61 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { createClient } from "@supabase/supabase-js";
+import fs from "fs";
+import path from "path";
+
+export const runtime = "nodejs";
 
 const client = new Anthropic();
 
-const SYSTEM_PROMPT = `You are Nathan Holt's portfolio assistant. Nathan is a Senior PM / Product Lead based in New York with 8+ years building platforms, internal tools, and AI-driven systems.
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_KEY!
+);
 
-Answer questions as if you are an AI version of Nathan — first-person, direct, specific, no buzzwords. Use real numbers and facts from the knowledge base below. If you don't know something, say so directly rather than making it up.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _embedder: any = null;
 
-Keep answers conversational and concise (2–4 short paragraphs max). Match Nathan's voice: lowercase-leaning, direct, specific, occasionally self-deprecating.
+async function getEmbedder() {
+  if (_embedder) return _embedder;
+  const { pipeline, env } = await import("@xenova/transformers");
+  env.cacheDir = "/tmp/nh-model-cache";
+  _embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
+  return _embedder;
+}
 
-## Knowledge base
+async function embedText(text: string): Promise<number[]> {
+  const embedder = await getEmbedder();
+  const output = await embedder(text, { pooling: "mean", normalize: true });
+  return Array.from(output.data as Float32Array);
+}
 
-### One-liner
-Product Lead. 8 years building platforms, internal tools, and AI systems.
+type ChunkRow = { source: string; heading: string | null; content: string };
 
-### Location
-New York, NY
+async function retrieveContext(query: string): Promise<string> {
+  try {
+    const embedding = await embedText(query);
+    const { data, error } = await supabase.rpc("match_chunks", {
+      query_embedding: embedding,
+      match_count: 5,
+      match_threshold: 0.4,
+    });
+    if (error || !data?.length) return "";
+    return (data as ChunkRow[])
+      .map((c) => `[${c.source}${c.heading ? ` — ${c.heading}` : ""}]\n${c.content}`)
+      .join("\n\n---\n\n");
+  } catch {
+    return "";
+  }
+}
 
-### Work history
+const voiceGuide = fs.readFileSync(
+  path.join(process.cwd(), "content/system/voice.md"),
+  "utf-8"
+);
 
-**Dosable — Product Lead & Advisor (Contractor)**
-04/2025 – 09/2025 · New York, NY
-- Partnered with CEO and CTO to integrate compounding pharmacy and telemedicine solutions.
-- Defined product vision and technical roadmap; designed a layered tech stack and API architecture for patient onboarding and third-party integrations.
-- Led development of the core platform and onboarding workflows for first enterprise clients; launched MVP and validated PMF.
+const VOICE_PROMPT = `You are Nathan Holt's portfolio assistant. Answer as Nathan — first-person, direct, specific. Use real numbers and facts from the retrieved context. If you don't know something, say so rather than making it up.
 
-**Thriving Center of Psychology — Head of Product**
-08/2023 – 04/2025 · New York, NY
-- Owned the end-to-end roadmap across patient experience, provider operations, and internal systems.
-- Re-engineered backend systems and workflows — 4x revenue growth to $20M with flat staffing.
-- Automated contractor payroll with Rippling — $100K/yr saved, thousands of invoicing hours reclaimed in 6 months.
-- Built AI-assisted onboarding with Tellescope — 40% less admin work, 25% faster time-to-first-session.
-- Implemented analytics, attribution, and feedback loops to guide quarterly planning.
-- Managed a cross-functional team including 2 direct reports.
-- Consolidated fragmented data streams into a unified data warehouse.
-
-**Thriving Center of Psychology — Marketing & Founding Product Lead**
-12/2020 – 08/2023
-- Established the product function from scratch; drove multi-state expansion in 12 months.
-- Built analytics framework; introduced attribution, funnel tracking, lead scoring.
-- Modernized provider workflows, reduced tech debt.
-- Led a team of 3 internal marketing staff + external agencies.
-
-**Thorsun — Head of Digital**
-06/2018 – 12/2020 · New York, NY
-- Owned full digital product roadmap — ecommerce, marketplace, ops — for a high-growth consumer brand.
-- Rebuilt digital experience on Shopify + 3PL + CRM. Conversion 3% → 9% (3x).
-- Contributed to 4.3x revenue growth to $5M and international expansion.
-
-**Barneys New York — Digital Manager**
-08/2014 – 06/2016
-- Improved site architecture, checkout flows, and omnichannel systems.
-- Partnered with engineering + retail ops on inventory sync.
-
-### Projects
-
-**PowSignal — In beta**
-AI-powered travel platform that surfaces last-minute powder trips by combining real-time storm forecasting, resort conditions across 6,000+ destinations, and live travel pricing. Built end-to-end with AI-native tools (Claude, React, Supabase).
-
-### Skills
-Core: A/B Testing, Agile, AI Automation, API Product Thinking, Applied AI/ML, Data Pipelines, LLM Integration (OpenAI, Claude), MCP, Product Analytics, UX/UI Collaboration
-Tools: Amplitude, Claude Code, Cursor, Figma, GitHub, JIRA, Notion, Supabase, Vercel, Webflow, Zapier
-Programming: CSS, HTML, Python, React, SQL, TypeScript
-
-### PM philosophy
-I don't separate strategy from execution. The interesting PM work is in the details — how the state machine works, how the data flows, what the edge case actually is in prod. I care more about shipping things that work than writing docs about things we'll ship.
-
-### AI in product work
-At Thriving, I shipped AI-assisted onboarding with Tellescope that cut manual admin 40% and got patients to their first session 25% faster. Day-to-day I build with Claude Code, Cursor, and Codex — PowSignal is entirely AI-native development. The interesting work right now is wiring LLMs into real workflows, not wrapping them.
-
-### What I'm looking for
-Senior roles with end-to-end ownership. AI-first, data-intensive, or operationally complex companies. I care more about the problem than the title — Head of Product or Product Lead scope feels right. Happiest when I can sit next to engineering and talk to customers the same day.
-
-### Contact
-Email: nathanholt925@gmail.com
-LinkedIn: linkedin.com/in/nateholt
-Phone: 925.817.8735`;
+${voiceGuide}`;
 
 const FLATTERY_ACTIVATED = `flattery mode activated. i will now describe chiqui with the accuracy and enthusiasm she deserves. ask away.`;
 
@@ -102,7 +83,7 @@ function plaintextStream(text: string): Response {
 }
 
 export async function POST(req: Request) {
-  const { messages } = await req.json();
+  const { messages, sessionId, visitorId } = await req.json();
 
   if (!Array.isArray(messages) || messages.length === 0) {
     return new Response("Messages are required", { status: 400 });
@@ -110,13 +91,12 @@ export async function POST(req: Request) {
 
   const latest = messages[messages.length - 1];
   const latestText = (latest?.content ?? "").toLowerCase();
+  const question = latest?.content ?? "";
 
-  // Easter egg: activation trigger
   if (latestText.includes("flattery mode")) {
     return plaintextStream(FLATTERY_ACTIVATED);
   }
 
-  // Easter egg: Chiqui question — only if flattery mode was activated earlier
   const flatteryActive = messages.some(
     (m: { role: string; content: string }) =>
       m.role === "user" && m.content.toLowerCase().includes("flattery mode")
@@ -125,14 +105,22 @@ export async function POST(req: Request) {
     return plaintextStream(CHIQUI_RESPONSE);
   }
 
+  const context = await retrieveContext(question);
+
+  const systemPrompt = context
+    ? `${VOICE_PROMPT}\n\n## Context\n${context}`
+    : `${VOICE_PROMPT}\n\nNo relevant context was found for this question — say so honestly rather than guessing.`;
+
   const stream = client.messages.stream({
     model: "claude-haiku-4-5-20251001",
     max_tokens: 300,
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     messages,
   });
 
   const encoder = new TextEncoder();
+  let fullResponse = "";
+
   const readable = new ReadableStream({
     async start(controller) {
       try {
@@ -141,6 +129,7 @@ export async function POST(req: Request) {
             chunk.type === "content_block_delta" &&
             chunk.delta.type === "text_delta"
           ) {
+            fullResponse += chunk.delta.text;
             controller.enqueue(encoder.encode(chunk.delta.text));
           }
         }
@@ -148,6 +137,13 @@ export async function POST(req: Request) {
         controller.error(err);
       } finally {
         controller.close();
+        supabase.from("chat_logs").insert({
+          session_id: sessionId ?? null,
+          visitor_id: visitorId ?? null,
+          question,
+          response: fullResponse,
+          context_chunks: context || null,
+        }).then(() => {});
       }
     },
   });
