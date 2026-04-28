@@ -6,22 +6,25 @@
 
 ## Overview
 
-Contracted as Product Lead to help Dosable define and build their core platform. Dosable is a healthcare SaaS company integrating compounding pharmacy and telemedicine solutions. Worked directly with the CEO and CTO to take the product from concept to MVP.
+Contracted as Product Lead at Dosable, a healthcare SaaS company building an integrated compounding pharmacy and telemedicine platform. Came in at the earliest stage — no product process, no defined roadmap, no enterprise clients. Left with an MVP in the hands of the first enterprise customers and a foundation the engineering team could build on.
+
+## What Dosable Is
+
+Dosable connects compounding pharmacies with telemedicine providers through a single integrated platform. The idea is to close the gap between the clinical side (prescriptions, provider workflows) and the fulfillment side (compounding, dispensing, shipping) in a way that existing tools don't handle well. The target customer is enterprise healthcare operators who need both sides to talk to each other reliably.
 
 ## What I Did
 
-- Partnered with the CEO and CTO to define product vision and integrate compounding pharmacy and telemedicine solutions
-- Designed a layered tech stack and API architecture for patient onboarding and third-party integrations
-- Led development of the core platform and onboarding workflows for first enterprise clients
-- Coordinated cross-functional requirements across engineering and operations to launch MVP
-- Validated product-market fit with early enterprise clients
-- Managed product backlog, sprint planning, and stakeholder communication
-- Ensured alignment on priorities, timelines, and feature releases across all teams
+- Partnered directly with the CEO and CTO to define the product vision and translate it into a technical roadmap with clear sequencing and tradeoffs
+- Designed a layered API architecture for patient onboarding and third-party integrations, covering both the pharmacy and telemedicine sides of the platform
+- Led development of core onboarding workflows from spec through delivery, coordinating across engineering and operations
+- Managed the product backlog, ran sprint planning, and kept stakeholder communication tight across a cross-functional team
+- Validated early product-market fit with first enterprise clients during the MVP phase
+- Made prioritization calls on what to build for launch versus what to defer, with a focus on getting something real in front of clients fast
 
 ## Context
 
-This was a 0-to-1 engagement — coming in at the earliest stage to build the foundation. The work required both high-level product thinking (what are we building and why) and hands-on execution (API architecture, onboarding flows, integration specs).
+This was a true 0-to-1 engagement. The interesting challenge wasn't just what to build — it was figuring out where to start when the problem space is complex, the regulatory environment is constrained, and the clients you're building for have high expectations. The API architecture work was particularly important: getting the integration layer right early meant the team wasn't constantly rearchitecting as new pharmacy and telemedicine partners came on.
 
 ## Tech Stack
 
-API architecture design, patient onboarding systems, telemedicine integrations, compounding pharmacy platform integrations
+API architecture design, patient onboarding workflows, telemedicine integrations, compounding pharmacy platform integrations

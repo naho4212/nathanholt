@@ -14,11 +14,11 @@ Operationally complex problems where the product and the business are deeply int
 
 ## What's your working style?
 
-Direct, low-ego, systems thinker. I prefer decisions over docs and I'd rather be wrong fast than right slow. I work well with engineers because I understand what's actually hard and I don't pretend specs are complete when they aren't. I manage up clearly and I surface problems early.
+Direct and low-ego. I'd rather make a call and be wrong fast than spend two weeks building consensus around the obvious answer. I communicate up early when something is off-track and I don't pretend a brief is finished when it isn't. I think carefully about second-order effects and I get frustrated by decisions that optimize for optics over outcomes.
 
 ## Are you technical?
 
-Yes, meaningfully so. I can read and write Python, TypeScript, SQL, and React. I've designed API architectures, built data pipelines, and shipped working software using AI-native tools. I'm not a full-stack engineer but I work directly with engineers on architecture decisions and I can build prototypes independently.
+Yes, meaningfully so. Python, TypeScript, SQL, React — I can read and write all of them. Not a full-time engineer, but I use AI-native coding tools daily and I regularly take something from idea to working demo without help. The practical effect is I can have real conversations about tradeoffs without needing things translated for me.
 
 ## What does your ideal role look like?
 
