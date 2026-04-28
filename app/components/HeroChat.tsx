@@ -100,13 +100,21 @@ export default function HeroChat() {
     }
   };
 
-  // Auto-resize whenever input value changes (covers chips, external prefills, typing)
-  useEffect(() => {
+  const resizeTextarea = useCallback(() => {
     const el = inputRef.current;
     if (!el) return;
     el.style.height = "auto";
     el.style.height = Math.min(el.scrollHeight, 120) + "px";
-  }, [input]);
+  }, []);
+
+  // Auto-resize on value changes
+  useEffect(() => { resizeTextarea(); }, [input, resizeTextarea]);
+
+  // Auto-resize on window resize (text reflows at different widths)
+  useEffect(() => {
+    window.addEventListener("resize", resizeTextarea, { passive: true });
+    return () => window.removeEventListener("resize", resizeTextarea);
+  }, [resizeTextarea]);
 
   const prefill = useCallback((prompt: string) => {
     setInput(prompt);
