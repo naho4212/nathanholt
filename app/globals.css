@@ -62,7 +62,7 @@ a{color:inherit;text-decoration:none}
   max-width:var(--maxw);margin:0 auto;
   padding:22px var(--gut);
   display:flex;align-items:center;gap:14px;
-  transition:padding .25s ease;
+  transition:none;
   position:relative;
   --nav-pt:22px;
 }

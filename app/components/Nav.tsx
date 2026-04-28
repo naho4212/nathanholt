@@ -12,9 +12,15 @@ export default function Nav() {
     const sheet = sheetRef.current;
     if (!sheet) return;
 
+    let isScrolled = false;
     const onScroll = () => {
-      if (window.scrollY > 80) sheet.classList.add("scrolled");
-      else sheet.classList.remove("scrolled");
+      if (!isScrolled && window.scrollY > 80) {
+        isScrolled = true;
+        sheet.classList.add("scrolled");
+      } else if (isScrolled && window.scrollY < 60) {
+        isScrolled = false;
+        sheet.classList.remove("scrolled");
+      }
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
