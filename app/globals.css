@@ -882,6 +882,7 @@ footer{background:var(--bg-primary)}
 .mnav-actions a,.mnav-actions button{
   flex:1;text-align:center;display:flex;
   align-items:center;justify-content:center;
+  min-height:40px;
   font-family:inherit;cursor:pointer;box-sizing:border-box;
 }
 body.mnav-open{overflow:hidden}
