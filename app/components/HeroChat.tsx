@@ -167,7 +167,7 @@ export default function HeroChat() {
           ref={inputRef}
           id="heroAskInput"
           className="ask-input"
-          placeholder={isEmpty ? "Ask about my work, side projects, or how I think…" : "Ask a follow-up…"}
+          placeholder={isEmpty ? "What do you want to know about me?" : "Ask a follow-up…"}
           autoComplete="off"
           rows={1}
           value={input}
