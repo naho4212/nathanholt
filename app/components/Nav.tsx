@@ -81,7 +81,7 @@ export default function Nav() {
   const openMnav = () => {
     mnavSheetRef.current?.classList.add("open");
     mnavScrimRef.current?.classList.add("open");
-    mnavSheetRef.current?.setAttribute("aria-hidden", "false");
+    mnavSheetRef.current?.removeAttribute("inert");
     hamburgerRef.current?.setAttribute("aria-expanded", "true");
     document.body.classList.add("mnav-open");
   };
@@ -89,7 +89,7 @@ export default function Nav() {
   const closeMnav = () => {
     mnavSheetRef.current?.classList.remove("open");
     mnavScrimRef.current?.classList.remove("open");
-    mnavSheetRef.current?.setAttribute("aria-hidden", "true");
+    mnavSheetRef.current?.setAttribute("inert", "");
     hamburgerRef.current?.setAttribute("aria-expanded", "false");
     document.body.classList.remove("mnav-open");
   };
@@ -239,7 +239,7 @@ export default function Nav() {
         className="mnav-sheet"
         ref={mnavSheetRef}
         id="mnavSheet"
-        aria-hidden="true"
+        inert={true}
         onClick={handleMnavLinkClick}
       >
         <div className="mnav-header">
