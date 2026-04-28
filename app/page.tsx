@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Nav from "./components/Nav";
 import HeroChat from "./components/HeroChat";
+import HeroMark from "./components/HeroMark";
 import StackPanel from "./components/StackPanel";
 import UseSection from "./components/UseSection";
 import PresetGrid from "./components/PresetGrid";
@@ -18,40 +19,23 @@ export default function Home() {
       {/* Latest news strip */}
       <div className="newsrow">
         <span className="label">Latest</span>
-        <span>PowSignal — public beta launched for the &apos;26 season.</span>
+        <span>Working on side projects, releasing soon.</span>
         <span className="next">Next →</span>
       </div>
 
       {/* ─── Hero ─── */}
       <section className="hero">
         <div className="hero-left">
-          <h1>The portfolio that <em>talks back.</em></h1>
+          <h1>Hi, I&apos;m <em>Nathan.</em></h1>
           <p className="sub">
-            Eight years shipping product across healthtech, SaaS, and
-            marketplaces. Ask anything — the chat below is grounded in my
-            real work, not a pitch.
+            Product Leader. I build AI-driven products, platforms, and internal
+            tools. Ten years shipping across healthtech, SaaS, and marketplaces.
+            Ask me anything.
           </p>
           <HeroChat />
         </div>
 
-        <div className="hero-mark" aria-hidden="true" data-variant="f">
-          <svg viewBox="0 0 400 360">
-            <circle cx="200" cy="180" r="148" fill="#D97757" />
-            <circle cx="200" cy="180" r="138" fill="none" stroke="#EFEAE1" strokeWidth="1.4" opacity="0.28" />
-            <g fill="#1F1D1C">
-              <path d="M120 108 h34 v144 h-34 z" />
-              <path d="M200 108 h34 v144 h-34 z" />
-              <path d="M150 108 L210 252 L184 252 L124 108 Z" />
-              <path d="M110 108 h54 v6 h-54 z" />
-              <path d="M190 108 h54 v6 h-54 z" />
-              <path d="M110 246 h54 v6 h-54 z" />
-              <path d="M190 246 h54 v6 h-54 z" />
-            </g>
-            <circle cx="268" cy="252" r="6" fill="#1F1D1C" />
-            <path d="M92 298 C 150 310, 240 312, 310 296" fill="none" stroke="#EFEAE1" strokeWidth="1.8" strokeLinecap="round" opacity="0.7" />
-            <text x="200" y="342" textAnchor="middle" fontFamily="'JetBrains Mono', ui-monospace, monospace" fontSize="11" letterSpacing="4" fill="#EFEAE1" opacity="0.55">N . H .</text>
-          </svg>
-        </div>
+        <HeroMark />
       </section>
       </div>{/* /hero-bg */}
 
