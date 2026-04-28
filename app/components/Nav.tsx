@@ -7,6 +7,7 @@ export default function Nav() {
   const hamburgerRef = useRef<HTMLButtonElement>(null);
   const mnavSheetRef = useRef<HTMLElement>(null);
   const mnavScrimRef = useRef<HTMLDivElement>(null);
+  const mnavActionsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sheet = sheetRef.current;
@@ -81,6 +82,7 @@ export default function Nav() {
   const openMnav = () => {
     mnavSheetRef.current?.classList.add("open");
     mnavScrimRef.current?.classList.add("open");
+    mnavActionsRef.current?.classList.add("open");
     mnavSheetRef.current?.removeAttribute("inert");
     hamburgerRef.current?.setAttribute("aria-expanded", "true");
     document.body.classList.add("mnav-open");
@@ -89,6 +91,7 @@ export default function Nav() {
   const closeMnav = () => {
     mnavSheetRef.current?.classList.remove("open");
     mnavScrimRef.current?.classList.remove("open");
+    mnavActionsRef.current?.classList.remove("open");
     mnavSheetRef.current?.setAttribute("inert", "");
     hamburgerRef.current?.setAttribute("aria-expanded", "false");
     document.body.classList.remove("mnav-open");
@@ -266,16 +269,16 @@ export default function Nav() {
           data-cal-link="nateholt/meeting"
           data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
         ><b>Meeting</b><span>Schedule a call</span></button>
-        <div className="mnav-actions">
-          <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <button
-            className="cta-solid"
-            data-cal-namespace="meeting"
-            data-cal-link="nateholt/meeting"
-            data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
-          >Start a chat</button>
-        </div>
       </aside>
+      <div className="mnav-actions" ref={mnavActionsRef}>
+        <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+        <button
+          className="cta-solid"
+          data-cal-namespace="meeting"
+          data-cal-link="nateholt/meeting"
+          data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
+        >Start a chat</button>
+      </div>
     </>
   );
 }

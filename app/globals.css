@@ -872,12 +872,13 @@ footer{background:var(--bg-primary)}
   color:var(--text-3);margin-top:3px;letter-spacing:0.01em;
 }
 .mnav-actions{
-  position:fixed;bottom:0;left:0;right:0;
-  display:flex;gap:10px;
+  position:fixed;bottom:0;left:0;right:0;z-index:57;
+  display:none;gap:10px;
   padding:16px var(--gut) calc(16px + env(safe-area-inset-bottom));
   background:var(--bg-primary);
   border-top:1px solid var(--line);
 }
+.mnav-actions.open{display:flex}
 .mnav-actions a,.mnav-actions button{
   flex:1;text-align:center;display:flex;
   align-items:center;justify-content:center;
