@@ -2,25 +2,29 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env.local" });
 
 import { createClient } from "@supabase/supabase-js";
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { pipeline, env } = require("@xenova/transformers");
 import fs from "fs";
 import path from "path";
-
-env.cacheDir = "./.model-cache";
-// Silence progress bars in CI/script context
-env.allowLocalModels = false;
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-type Chunk = {
-  source: string;
-  heading: string | null;
-  content: string;
-};
+async function embedBatch(texts: string[]): Promise<number[][]> {
+  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ input: texts, model: "voyage-3-lite" }),
+  });
+  if (!res.ok) throw new Error(`Voyage API error: ${res.status} ${await res.text()}`);
+  const json = await res.json();
+  return json.data.map((d: { embedding: number[] }) => d.embedding);
+}
+
+type Chunk = { source: string; heading: string | null; content: string };
 
 function chunkMarkdown(source: string, raw: string): Chunk[] {
   const chunks: Chunk[] = [];
@@ -50,6 +54,7 @@ function walkContent(dir: string, base: string): { rel: string; full: string }[]
   for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name);
     if (entry.isDirectory()) {
+      if (entry.name === "system") continue;
       results.push(...walkContent(full, base));
     } else if (entry.name.endsWith(".md")) {
       const rel = path.relative(base, full).replace(/\.md$/, "");
@@ -60,10 +65,6 @@ function walkContent(dir: string, base: string): { rel: string; full: string }[]
 }
 
 async function main() {
-  console.log("Loading embedding model (first run downloads ~22MB)...");
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const embed = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-
   const contentDir = path.join(process.cwd(), "content");
   const files = walkContent(contentDir, contentDir);
   const allChunks: Chunk[] = [];
@@ -75,26 +76,37 @@ async function main() {
 
   console.log(`Chunked ${files.length} files → ${allChunks.length} chunks`);
 
-  // Clear existing
   const { error: delErr } = await supabase.from("chunks").delete().gte("id", 0);
   if (delErr) {
-    console.error("Delete failed — does the chunks table exist? Run supabase/schema.sql first.");
+    console.error("Delete failed:", delErr.message);
     process.exit(1);
   }
 
-  // Embed and insert
+  // Embed in batches of 8 with 22s delay between batches (respects 3 RPM + 10K TPM free tier)
+  console.log("Embedding chunks via Voyage AI...");
+  const texts = allChunks.map((c) => [c.heading, c.content].filter(Boolean).join("\n"));
+  const BATCH_SIZE = 8;
+  const embeddings: number[][] = [];
+  for (let b = 0; b < texts.length; b += BATCH_SIZE) {
+    if (b > 0) {
+      process.stdout.write(`  waiting 22s for rate limit...\n`);
+      await new Promise((r) => setTimeout(r, 22000));
+    }
+    const batch = texts.slice(b, b + BATCH_SIZE);
+    const batchEmbeddings = await embedBatch(batch);
+    embeddings.push(...batchEmbeddings);
+    process.stdout.write(`\rEmbedded ${Math.min(b + BATCH_SIZE, texts.length)}/${texts.length} chunks`);
+  }
+  console.log();
+
+  // Insert all chunks
   for (let i = 0; i < allChunks.length; i++) {
     const chunk = allChunks[i];
-    const text = [chunk.heading, chunk.content].filter(Boolean).join("\n");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const output = await embed(text, { pooling: "mean", normalize: true });
-    const embedding = Array.from(output.data as Float32Array);
-
     const { error } = await supabase.from("chunks").insert({
       source: chunk.source,
       heading: chunk.heading,
       content: chunk.content,
-      embedding,
+      embedding: embeddings[i],
     });
 
     if (error) {

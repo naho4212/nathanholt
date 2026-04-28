@@ -12,21 +12,18 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_KEY!
 );
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let _embedder: any = null;
-
-async function getEmbedder() {
-  if (_embedder) return _embedder;
-  const { pipeline, env } = await import("@xenova/transformers");
-  env.cacheDir = "/tmp/nh-model-cache";
-  _embedder = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-  return _embedder;
-}
-
 async function embedText(text: string): Promise<number[]> {
-  const embedder = await getEmbedder();
-  const output = await embedder(text, { pooling: "mean", normalize: true });
-  return Array.from(output.data as Float32Array);
+  const res = await fetch("https://api.voyageai.com/v1/embeddings", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.VOYAGE_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ input: text, model: "voyage-3-lite" }),
+  });
+  if (!res.ok) throw new Error(`Voyage error: ${res.status}`);
+  const json = await res.json();
+  return json.data[0].embedding;
 }
 
 type ChunkRow = { source: string; heading: string | null; content: string };
@@ -36,8 +33,8 @@ async function retrieveContext(query: string): Promise<string> {
     const embedding = await embedText(query);
     const { data, error } = await supabase.rpc("match_chunks", {
       query_embedding: embedding,
-      match_count: 5,
-      match_threshold: 0.4,
+      match_count: 8,
+      match_threshold: 0.25,
     });
     if (error || !data?.length) return "";
     return (data as ChunkRow[])
