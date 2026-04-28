@@ -2,6 +2,13 @@
 
 import { useEffect, useRef } from "react";
 
+function scrollToChat() {
+  const el = document.getElementById('heroAskInput');
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  setTimeout(() => el.focus(), 400);
+}
+
 export default function Nav() {
   const sheetRef = useRef<HTMLDivElement>(null);
   const hamburgerRef = useRef<HTMLButtonElement>(null);
@@ -208,12 +215,7 @@ export default function Nav() {
           </nav>
           <div className="nav-right">
             <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <button
-              className="cta-solid"
-              data-cal-namespace="meeting"
-              data-cal-link="nateholt/meeting"
-              data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
-            >Start a chat</button>
+            <button className="cta-solid" onClick={scrollToChat}>Start a chat</button>
             <button
               className="nav-hamburger"
               ref={hamburgerRef}
@@ -272,12 +274,7 @@ export default function Nav() {
       </aside>
       <div className="mnav-actions" ref={mnavActionsRef}>
         <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <button
-          className="cta-solid"
-          data-cal-namespace="meeting"
-          data-cal-link="nateholt/meeting"
-          data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
-        >Start a chat</button>
+        <button className="cta-solid" onClick={() => { closeMnav(); setTimeout(scrollToChat, 350); }}>Start a chat</button>
       </div>
     </>
   );

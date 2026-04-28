@@ -216,12 +216,7 @@ export default function Home() {
             <p>I like problems that sit at the boundary between operational chaos and something a machine can now do well. Onboarding flows, internal tools, ingestion pipelines, the glue between humans and LLMs. The stuff that makes a company feel lighter from the inside.</p>
             <p>Based in New York. Open to senior IC or head-of-product roles — full-time, contract, or advisor. Happiest when I can sit next to engineering and talk to customers the same day.</p>
             <div className="about-actions">
-              <button
-                className="cta-solid"
-                data-cal-namespace="meeting"
-                data-cal-link="nateholt/meeting"
-                data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
-              >Start a chat</button>
+              <a className="cta-solid" href="#heroAskInput">Start a chat</a>
               <a className="cta-ghost" href="/nathan_holt_cv.pdf" download>Resume (PDF) ↓</a>
               <a className="email-link" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">nathanholt925@gmail.com</a>
             </div>
