@@ -102,7 +102,14 @@ export default function HeroChat() {
 
   const prefill = useCallback((prompt: string) => {
     setInput(prompt);
-    setTimeout(() => inputRef.current?.focus(), 50);
+    setTimeout(() => {
+      const el = inputRef.current;
+      if (el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 120) + "px";
+      }
+      el?.focus();
+    }, 50);
   }, []);
 
   // Expose prefill for PresetGrid
