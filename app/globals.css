@@ -117,7 +117,7 @@ a{color:inherit;text-decoration:none}
 .mega>*{min-width:0}
 .mega-feat{min-width:0;max-width:100%}
 .nav-item[data-menu="work"] .mega{width:820px;grid-template-columns:1fr 1fr 1.2fr}
-.nav-item[data-menu="thinking"] .mega{width:620px;grid-template-columns:1fr 1.2fr}
+.nav-item[data-menu="thinking"] .mega{width:568px;grid-template-columns:1fr 1.2fr}
 .nav-item[data-menu="about"] .mega{width:820px;grid-template-columns:1fr 1fr 1.2fr}
 .nav-item.open .mega{display:grid}
 
