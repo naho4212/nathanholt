@@ -164,8 +164,8 @@ export default function Nav() {
               <div className="mega mega-thinking" role="menu">
                 <div className="mega-col">
                   <h6>Sources</h6>
-                  <a href="#" onClick={handleStackOpen}><b>Stack</b><span>What I read — books, podcasts, tools</span></a>
-                  <a href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer"><b>Opinions</b><span>Current thinking · updated monthly</span></a>
+                  <a href="#" onClick={handleStackOpen}><b>Stack</b><span>Books, podcasts, tools</span></a>
+                  <a href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer"><b>Opinions</b><span>Updated monthly</span></a>
                 </div>
                 <div className="mega-col mega-feat">
                   <div className="feat-label">From OPINIONS.md</div>
