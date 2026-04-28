@@ -100,16 +100,17 @@ export default function HeroChat() {
     }
   };
 
+  // Auto-resize whenever input value changes (covers chips, external prefills, typing)
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = Math.min(el.scrollHeight, 120) + "px";
+  }, [input]);
+
   const prefill = useCallback((prompt: string) => {
     setInput(prompt);
-    setTimeout(() => {
-      const el = inputRef.current;
-      if (el) {
-        el.style.height = "auto";
-        el.style.height = Math.min(el.scrollHeight, 120) + "px";
-      }
-      el?.focus();
-    }, 50);
+    setTimeout(() => inputRef.current?.focus(), 50);
   }, []);
 
   // Expose prefill for PresetGrid
