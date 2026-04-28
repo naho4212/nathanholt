@@ -914,6 +914,8 @@ body.mnav-open{overflow:hidden}
   .section-head .m{text-align:left}
   .row{grid-template-columns:1fr!important;gap:24px}
   .row .stack{text-align:left}
+  .row ul{max-height:none;opacity:1;margin-top:14px}
+  .row .chev{display:none}
   .footwrap{padding:48px var(--gut) 32px;grid-template-columns:1fr 1fr!important;gap:32px 24px}
   .foot-brand{grid-column:1/-1}
   .about-grid{grid-template-columns:1fr!important;gap:24px}
