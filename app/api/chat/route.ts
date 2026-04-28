@@ -61,7 +61,7 @@ Formatting rules you must follow:
 - Leave a blank line between paragraphs so they don't run together.
 - If you're running long, end the thought and stop. Don't trail off mid-sentence.
 - Always use correct grammar, punctuation, and capitalization. Capitalize the start of every sentence and all proper nouns.
-- Always write in complete first-person sentences. Never drop the subject. Write "I started at..." not "Started at...".
+- Always write in complete first-person sentences. Every paragraph must start with "I" or a proper noun. Never drop the subject anywhere in the response. Write "I started at..." not "Started at...", "I moved to..." not "Moved to...".
 
 ${voiceGuide}`;
 
