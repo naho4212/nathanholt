@@ -9,7 +9,7 @@ const client = new Anthropic();
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_KEY!
+  process.env.SUPABASE_SERVICE_KEY!,
 );
 
 async function embedText(text: string): Promise<number[]> {
@@ -38,7 +38,10 @@ async function retrieveContext(query: string): Promise<string> {
     });
     if (error || !data?.length) return "";
     return (data as ChunkRow[])
-      .map((c) => `[${c.source}${c.heading ? ` — ${c.heading}` : ""}]\n${c.content}`)
+      .map(
+        (c) =>
+          `[${c.source}${c.heading ? ` — ${c.heading}` : ""}]\n${c.content}`,
+      )
       .join("\n\n---\n\n");
   } catch {
     return "";
@@ -47,10 +50,16 @@ async function retrieveContext(query: string): Promise<string> {
 
 const voiceGuide = fs.readFileSync(
   path.join(process.cwd(), "content/system/voice.md"),
-  "utf-8"
+  "utf-8",
 );
 
 const VOICE_PROMPT = `You are Nathan Holt's portfolio assistant. Answer as Nathan — first-person, direct, specific. Use real numbers and facts from the retrieved context. If you don't know something, say so rather than making it up.
+
+Formatting rules you must follow:
+- Keep most answers to 1-3 short paragraphs. One-line questions get one-line answers.
+- Never use em dashes (—). Use commas, periods, or start a new sentence instead.
+- Leave a blank line between paragraphs so they don't run together.
+- If you're running long, end the thought and stop. Don't trail off mid-sentence.
 
 ${voiceGuide}`;
 
@@ -75,7 +84,10 @@ function plaintextStream(text: string): Response {
     },
   });
   return new Response(readable, {
-    headers: { "Content-Type": "text/plain; charset=utf-8", "X-Content-Type-Options": "nosniff" },
+    headers: {
+      "Content-Type": "text/plain; charset=utf-8",
+      "X-Content-Type-Options": "nosniff",
+    },
   });
 }
 
@@ -96,9 +108,12 @@ export async function POST(req: Request) {
 
   const flatteryActive = messages.some(
     (m: { role: string; content: string }) =>
-      m.role === "user" && m.content.toLowerCase().includes("flattery mode")
+      m.role === "user" && m.content.toLowerCase().includes("flattery mode"),
   );
-  if (flatteryActive && (latestText.includes("chiqui") || latestText.includes("girlfriend"))) {
+  if (
+    flatteryActive &&
+    (latestText.includes("chiqui") || latestText.includes("girlfriend"))
+  ) {
     return plaintextStream(CHIQUI_RESPONSE);
   }
 
@@ -110,7 +125,7 @@ export async function POST(req: Request) {
 
   const stream = client.messages.stream({
     model: "claude-haiku-4-5-20251001",
-    max_tokens: 300,
+    max_tokens: 500,
     system: systemPrompt,
     messages,
   });
@@ -134,13 +149,16 @@ export async function POST(req: Request) {
         controller.error(err);
       } finally {
         controller.close();
-        supabase.from("chat_logs").insert({
-          session_id: sessionId ?? null,
-          visitor_id: visitorId ?? null,
-          question,
-          response: fullResponse,
-          context_chunks: context || null,
-        }).then(() => {});
+        supabase
+          .from("chat_logs")
+          .insert({
+            session_id: sessionId ?? null,
+            visitor_id: visitorId ?? null,
+            question,
+            response: fullResponse,
+            context_chunks: context || null,
+          })
+          .then(() => {});
       }
     },
   });

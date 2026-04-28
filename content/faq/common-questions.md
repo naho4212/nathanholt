@@ -2,7 +2,7 @@
 
 ## Why are you looking?
 
-My contract at Dosable wraps up in September 2025 and I'm looking for the right full-time role. I've spent the last several months doing a mix of advising, building PowSignal, and being selective about what I join next. I'm not in a rush but I'm actively looking for the right fit.
+My contract at Dosable wrapped up in late 2025. I've been working on personal projects, doing a targeted search, and being selective about what I join next. Actively looking for the right fit.
 
 ## What's your superpower?
 

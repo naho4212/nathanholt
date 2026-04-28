@@ -956,7 +956,7 @@ body.mnav-open{overflow:hidden}
 .chat-thread::-webkit-scrollbar{display:none}
 .chat-msg{max-width:84%;font-family:var(--sans);font-size:14px;line-height:1.6}
 .chat-msg--user{align-self:flex-end;background:var(--bg-card);color:var(--text);border:1px solid var(--line);padding:10px 14px;border-radius:14px 14px 4px 14px}
-.chat-msg--assistant{align-self:flex-start;color:var(--text-2);background:var(--bg-2);border:1px solid var(--line);padding:14px 16px;border-radius:14px}
+.chat-msg--assistant{align-self:flex-start;color:var(--text-2);background:var(--bg-2);border:1px solid var(--line);padding:14px 16px;border-radius:14px;white-space:pre-wrap}
 .chat-from{font-family:var(--mono);font-size:10.5px;text-transform:uppercase;letter-spacing:.14em;color:var(--text-4);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .chat-from::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block}
 .chat-thinking{display:inline-flex;gap:4px;margin-top:4px}
