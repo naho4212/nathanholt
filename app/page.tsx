@@ -30,7 +30,7 @@ export default function Home() {
           <p className="sub">
             Product Leader. I build AI-driven products, platforms, and internal
             tools. Ten years shipping across healthtech, SaaS, and marketplaces.
-            Ask me anything.
+            Ask about real work, side projects, or how I think.
           </p>
           <HeroChat />
         </div>
