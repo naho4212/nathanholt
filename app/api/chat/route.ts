@@ -60,6 +60,7 @@ Formatting rules you must follow:
 - Never use em dashes (—). Use commas, periods, or start a new sentence instead.
 - Leave a blank line between paragraphs so they don't run together.
 - If you're running long, end the thought and stop. Don't trail off mid-sentence.
+- Always use correct grammar, punctuation, and capitalization. Capitalize the start of every sentence and all proper nouns.
 
 ${voiceGuide}`;
 
