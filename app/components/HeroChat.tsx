@@ -2,8 +2,17 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import posthog from "posthog-js";
+import "@/lib/window.d";
 
 type Message = { role: "user" | "assistant"; content: string };
+
+const TEXTAREA_MAX_HEIGHT = 120;
+
+function resizeTextarea(el: HTMLTextAreaElement | null) {
+  if (!el) return;
+  el.style.height = "auto";
+  el.style.height = Math.min(el.scrollHeight, TEXTAREA_MAX_HEIGHT) + "px";
+}
 
 const CHIPS = [
   { label: "Work", icon: "✎", prompt: "What have you actually shipped? Give me the two biggest wins with real numbers." },
@@ -108,25 +117,19 @@ export default function HeroChat() {
     }
   };
 
-  const resizeTextarea = useCallback(() => {
-    const el = inputRef.current;
-    if (!el) return;
-    el.style.height = "auto";
-    el.style.height = Math.min(el.scrollHeight, 120) + "px";
-  }, []);
-
-  // Auto-resize on value changes
-  useEffect(() => { resizeTextarea(); }, [input, resizeTextarea]);
-
-  // Auto-resize on window resize (text reflows at different widths)
+  // Re-flow on window resize (text wraps differently at different widths)
   useEffect(() => {
-    window.addEventListener("resize", resizeTextarea, { passive: true });
-    return () => window.removeEventListener("resize", resizeTextarea);
-  }, [resizeTextarea]);
+    const onResize = () => resizeTextarea(inputRef.current);
+    window.addEventListener("resize", onResize, { passive: true });
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
 
   const prefill = useCallback((prompt: string) => {
     setInput(prompt);
-    setTimeout(() => inputRef.current?.focus(), 50);
+    setTimeout(() => {
+      inputRef.current?.focus();
+      resizeTextarea(inputRef.current);
+    }, 50);
   }, []);
 
   // Expose prefill for PresetGrid
@@ -181,12 +184,7 @@ export default function HeroChat() {
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          style={{ resize: "none", overflow: "hidden" }}
-          onInput={(e) => {
-            const el = e.currentTarget;
-            el.style.height = "auto";
-            el.style.height = Math.min(el.scrollHeight, 120) + "px";
-          }}
+          onInput={(e) => resizeTextarea(e.currentTarget)}
         />
         <button
           className="ask-send"
@@ -216,10 +214,4 @@ export default function HeroChat() {
       )}
     </div>
   );
-}
-
-declare global {
-  interface Window {
-    __nhPrefill?: (prompt: string) => void;
-  }
 }

@@ -14,6 +14,7 @@ export default function AboutActions() {
       >
         Resume (PDF) ↓
       </a>
+      <a className="email-link" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">nathanholt925@gmail.com</a>
     </div>
   );
 }

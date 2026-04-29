@@ -1,6 +1,8 @@
 "use client";
 
 import posthog from "posthog-js";
+import { scrollToTopAndPrefill } from "@/lib/scrollToChat";
+import "@/lib/window.d";
 
 const PRESETS = [
   { category: "Work", text: "What did you actually ship at Thriving Center?", prompt: "What did you actually build at Thriving Center? Walk me through the two biggest wins." },
@@ -14,10 +16,7 @@ const PRESETS = [
 export default function PresetGrid() {
   const handlePreset = (category: string, text: string, prompt: string) => {
     posthog.capture("chat_preset_clicked", { preset_category: category, preset_text: text });
-    if (typeof window !== "undefined" && window.__nhPrefill) {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-      setTimeout(() => window.__nhPrefill?.(prompt), 420);
-    }
+    scrollToTopAndPrefill(prompt);
   };
 
   return (
@@ -30,10 +29,4 @@ export default function PresetGrid() {
       ))}
     </div>
   );
-}
-
-declare global {
-  interface Window {
-    __nhPrefill?: (prompt: string) => void;
-  }
 }

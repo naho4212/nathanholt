@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Newsreader, Inter, JetBrains_Mono } from "next/font/google";
 import CalInit from "./components/CalInit";
+import StackPanel from "./components/StackPanel";
+import IdentityPanel from "./components/IdentityPanel";
 import "./globals.css";
 
 const newsreader = Newsreader({
@@ -90,6 +92,8 @@ export default function RootLayout({
     >
       <body suppressHydrationWarning>
         <CalInit />
+        <StackPanel />
+        <IdentityPanel />
         {children}
       </body>
     </html>

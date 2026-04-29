@@ -104,7 +104,7 @@ export async function POST(req: Request) {
       event: "chat_api_error",
       properties: { reason: "invalid_messages" },
     });
-    await posthog.shutdown();
+    await posthog.flush();
     return new Response("Messages are required", { status: 400 });
   }
 
@@ -139,7 +139,6 @@ export async function POST(req: Request) {
       session_id: sessionId ?? null,
     },
   });
-  posthog.shutdown().catch(() => {});
 
   const systemPrompt = context
     ? `${VOICE_PROMPT}\n\n## Context\n${context}`
@@ -170,17 +169,21 @@ export async function POST(req: Request) {
       } catch (err) {
         controller.error(err);
       } finally {
+        // Flush logs and analytics before closing the stream so the
+        // serverless function stays alive long enough to complete them.
+        await Promise.allSettled([
+          supabase
+            .from("chat_logs")
+            .insert({
+              session_id: sessionId ?? null,
+              visitor_id: visitorId ?? null,
+              question,
+              response: fullResponse,
+              context_chunks: context || null,
+            }),
+          posthog.flush(),
+        ]);
         controller.close();
-        supabase
-          .from("chat_logs")
-          .insert({
-            session_id: sessionId ?? null,
-            visitor_id: visitorId ?? null,
-            question,
-            response: fullResponse,
-            context_chunks: context || null,
-          })
-          .then(() => {});
       }
     },
   });

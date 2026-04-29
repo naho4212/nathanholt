@@ -1,14 +1,9 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Link from "next/link";
 import posthog from "posthog-js";
-
-function scrollToChat() {
-  const el = document.getElementById('heroAskInput');
-  if (!el) return;
-  el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  setTimeout(() => el.focus(), 400);
-}
+import { scrollToChat } from "@/lib/scrollToChat";
 
 export default function Nav() {
   const sheetRef = useRef<HTMLDivElement>(null);
@@ -106,6 +101,11 @@ export default function Nav() {
   };
 
   useEffect(() => {
+    // Mobile sheet starts inert until opened. Setting this imperatively
+    // (rather than via JSX prop) keeps React from clobbering the runtime
+    // toggles in openMnav/closeMnav on re-render.
+    mnavSheetRef.current?.setAttribute("inert", "");
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape" && mnavSheetRef.current?.classList.contains("open"))
         closeMnav();
@@ -122,9 +122,12 @@ export default function Nav() {
     };
   }, []);
 
-  const handleStackOpen = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleStackOpen = () => {
     window.dispatchEvent(new CustomEvent("nh:open-stack"));
+  };
+
+  const handleIdentityOpen = () => {
+    window.dispatchEvent(new CustomEvent("nh:open-identity"));
   };
 
   const handleMnavLinkClick = (e: React.MouseEvent) => {
@@ -132,40 +135,44 @@ export default function Nav() {
     if (target.tagName === "A" || target.closest("a")) closeMnav();
   };
 
-  const handleMnavStackOpen = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleMnavStackOpen = () => {
     closeMnav();
     window.dispatchEvent(new CustomEvent("nh:open-stack"));
+  };
+
+  const handleMnavIdentityOpen = () => {
+    closeMnav();
+    window.dispatchEvent(new CustomEvent("nh:open-identity"));
   };
 
   return (
     <>
       <div className="nav-sheet" id="navSheet" ref={sheetRef}>
         <header className="nav">
-          <a className="brand" href="/">Nathan Holt</a>
-          <a className="status-pill" href="#about">Open to senior roles</a>
+          <Link className="brand" href="/">Nathan Holt</Link>
+          <Link className="status-pill" href="/#about">Open to senior roles</Link>
           <nav className="nav-links">
             <div className="nav-item" data-menu="work">
               <button className="nav-trigger">Work <span className="ch">▾</span></button>
               <div className="mega mega-work" role="menu">
                 <div className="mega-col">
                   <h6>Roles</h6>
-                  <a href="#work"><b>Thriving Center of Psychology</b><span>Head of Product · 2023→25</span></a>
-                  <a href="#work"><b>Thorsun</b><span>Head of Digital · 2018→23</span></a>
-                  <a href="#work"><b>Barneys New York</b><span>Digital Manager · 2014→16</span></a>
-                  <a href="#work"><b>Dosable</b><span>Advisor · 2025→now</span></a>
-                  <a href="#work" className="see-all">See all roles →</a>
+                  <Link href="/#work"><b>Thriving Center of Psychology</b><span>Head of Product · 2023→25</span></Link>
+                  <Link href="/#work"><b>Thorsun</b><span>Head of Digital · 2018→23</span></Link>
+                  <Link href="/#work"><b>Barneys New York</b><span>Digital Manager · 2014→16</span></Link>
+                  <Link href="/#work"><b>Dosable</b><span>Advisor · 2025→now</span></Link>
+                  <Link href="/#work" className="see-all">See all roles →</Link>
                 </div>
                 <div className="mega-col">
                   <h6>Building now</h6>
-                  <a href="#building"><b>PowSignal</b><span>Powder trip AI · Public beta &#39;26</span></a>
-                  <a href="#building"><b>Side projects</b><span>Weekend prototypes</span></a>
+                  <Link href="/#building"><b>PowSignal</b><span>Powder trip AI · Public beta &#39;26</span></Link>
+                  <Link href="/#building"><b>Side projects</b><span>Weekend prototypes</span></Link>
                 </div>
                 <div className="mega-col mega-feat">
                   <div className="feat-label">Most recent win</div>
                   <div className="feat-title">4×&#39;d revenue at flat headcount.</div>
                   <div className="feat-body">At Thriving Center, rebuilt patient onboarding and cut time-to-first-session by 25%. Two years, one team.</div>
-                  <a className="feat-cta" href="#work">Read the case →</a>
+                  <Link className="feat-cta" href="/#work">Read the case →</Link>
                 </div>
               </div>
             </div>
@@ -175,7 +182,7 @@ export default function Nav() {
               <div className="mega mega-thinking" role="menu">
                 <div className="mega-col">
                   <h6>Sources</h6>
-                  <a href="#" onClick={handleStackOpen}><b>Stack</b><span>Books, podcasts, tools</span></a>
+                  <button type="button" className="mega-link" onClick={handleStackOpen}><b>Stack</b><span>Books, podcasts, tools</span></button>
                   <a href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer"><b>Opinions</b><span>Updated monthly</span></a>
                 </div>
                 <div className="mega-col mega-feat">
@@ -192,8 +199,8 @@ export default function Nav() {
               <div className="mega mega-about" role="menu">
                 <div className="mega-col">
                   <h6>Profile</h6>
-                  <a href="#about"><b>Bio</b><span>The short version</span></a>
-                  <a href="#about"><b>Now</b><span>What I&#39;m working on this week</span></a>
+                  <Link href="/#about"><b>Bio</b><span>The short version</span></Link>
+                  <button type="button" className="mega-link" onClick={handleIdentityOpen}><b>Identity</b><span>Outside work</span></button>
                 </div>
                 <div className="mega-col">
                   <h6>Get in touch</h6>
@@ -246,12 +253,11 @@ export default function Nav() {
         className="mnav-sheet"
         ref={mnavSheetRef}
         id="mnavSheet"
-        inert={true}
         onClick={handleMnavLinkClick}
       >
         <div className="mnav-header">
-          <a className="brand" href="/">Nathan Holt</a>
-          <a className="status-pill mnav-status" href="#about">Open to senior roles</a>
+          <Link className="brand" href="/">Nathan Holt</Link>
+          <Link className="status-pill mnav-status" href="/#about">Open to senior roles</Link>
         </div>
         <button className="mnav-close" aria-label="Close menu" onClick={closeMnav}>
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
@@ -260,12 +266,13 @@ export default function Nav() {
           </svg>
         </button>
         <h6>Work</h6>
-        <a href="#work"><b>Roles &amp; case studies</b><span>Thriving Center, Thorsun, Barneys, Dosable</span></a>
-        <a href="#building"><b>Building now</b><span>PowSignal · side projects</span></a>
+        <Link href="/#work"><b>Roles &amp; case studies</b><span>Thriving Center, Thorsun, Barneys, Dosable</span></Link>
+        <Link href="/#building"><b>Building now</b><span>PowSignal · side projects</span></Link>
         <h6>Thinking</h6>
-        <a href="#" onClick={handleMnavStackOpen}><b>Stack</b><span>Books, podcasts, tools</span></a>
+        <button type="button" className="mnav-link" onClick={handleMnavStackOpen}><b>Stack</b><span>Books, podcasts, tools</span></button>
         <h6>About</h6>
-        <a href="#about"><b>Bio + Now</b><span>The short version + this week</span></a>
+        <Link href="/#about"><b>Bio</b><span>The short version</span></Link>
+        <button type="button" className="mnav-link" onClick={handleMnavIdentityOpen}><b>Identity</b><span>Outside work</span></button>
         <a href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site"><b>Email</b><span>nathanholt925@gmail.com</span></a>
         <button
           className="mnav-cal-link"

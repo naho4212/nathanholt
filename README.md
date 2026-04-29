@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nateholt.com
 
-## Getting Started
+Personal portfolio + AI chat for Nathan Holt. Built with Next.js 16 (App Router), TypeScript, Tailwind v4, Anthropic SDK, and Supabase + Voyage for retrieval.
 
-First, run the development server:
+## Stack
+
+- **Framework:** Next.js 16 App Router on Fluid Compute (Vercel)
+- **UI:** Tailwind v4 + a custom design system in `app/globals.css` (warm editorial dark, single terracotta accent, Newsreader / Inter / JetBrains Mono)
+- **AI:** `@anthropic-ai/sdk` streaming `claude-haiku-4-5`, grounded via Voyage embeddings + pgvector
+- **Data:** Supabase Postgres (chunks, chat_logs)
+- **Analytics:** PostHog (client + server)
+
+## Local development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Required env vars (`.env.local`)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+ANTHROPIC_API_KEY=
+VOYAGE_API_KEY=
+NEXT_PUBLIC_SUPABASE_URL=
+SUPABASE_SERVICE_KEY=
+NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN=
+NEXT_PUBLIC_POSTHOG_HOST=
+```
 
-## Learn More
+### Optional env vars (production-only — for `/api/admin/verify-logs`)
 
-To learn more about Next.js, take a look at the following resources:
+```
+ADMIN_VERIFY_TOKEN=          # random secret, gate for the verify endpoint
+POSTHOG_PROJECT_ID=          # PostHog project numeric ID
+POSTHOG_PERSONAL_API_KEY=    # PostHog personal API key (read events scope)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The verify endpoint compares Supabase `chat_logs` row count against PostHog
+`chat_api_request` event count over a 14-day window. Returns metadata only —
+no question/response text leaves the server.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Knowledge base ingestion
 
-## Deploy on Vercel
+Source markdown lives in `content/`. Re-embed and upload chunks to Supabase:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run ingest
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Schema lives in `supabase/schema.sql` with timestamped migrations under `supabase/migrations/`.
+
+## Project map
+
+```
+app/
+  page.tsx                  Home (server component)
+  layout.tsx                Fonts, metadata, Cal init, StackPanel mount
+  globals.css               Design tokens + component CSS
+  api/chat/route.ts         POST streaming chat (Anthropic + Voyage RAG)
+  case/[slug]/page.tsx      Case-study route (statically generated)
+  components/               Client components
+  sitemap.ts, robots.ts     SEO routes
+lib/
+  cases.ts                  Case-study content + types
+  scrollToChat.ts           Shared scroll helpers
+  posthog-server.ts         Server PostHog singleton
+  window.d.ts               Shared client globals
+content/                    Markdown knowledge base for the chat
+scripts/ingest.ts           Embedding + Supabase upload pipeline
+supabase/                   Schema + migrations
+```
+
+## Deploy
+
+Auto-deploy via Vercel on push to `main`. Preview deployments on branches.

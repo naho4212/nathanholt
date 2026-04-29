@@ -1,6 +1,7 @@
 "use client";
 
 import posthog from "posthog-js";
+import { scrollToChat } from "@/lib/scrollToChat";
 
 export default function KeepGoButton() {
   return (
@@ -8,7 +9,7 @@ export default function KeepGoButton() {
       onClick={() => {
         posthog.capture("keep_go_button_clicked");
         window.scrollTo({ top: 0, behavior: "smooth" });
-        setTimeout(() => (document.getElementById("heroAskInput") as HTMLInputElement)?.focus(), 420);
+        setTimeout(() => scrollToChat(), 50);
       }}
     >
       Ask Nathan <span>→</span>

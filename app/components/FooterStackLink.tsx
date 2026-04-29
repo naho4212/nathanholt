@@ -2,14 +2,12 @@
 
 export default function FooterStackLink() {
   return (
-    <a
-      href="#"
-      onClick={(e) => {
-        e.preventDefault();
-        window.dispatchEvent(new CustomEvent("nh:open-stack"));
-      }}
+    <button
+      type="button"
+      className="footer-link-button"
+      onClick={() => window.dispatchEvent(new CustomEvent("nh:open-stack"))}
     >
       Stack
-    </a>
+    </button>
   );
 }

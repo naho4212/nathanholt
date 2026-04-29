@@ -10,14 +10,14 @@ export default function StackPanel() {
     scrimRef.current?.classList.add("open");
     requestAnimationFrame(() => panelRef.current?.classList.add("open"));
     panelRef.current?.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
+    document.body.classList.add("stack-open");
   };
 
   const close = () => {
     panelRef.current?.classList.remove("open");
     scrimRef.current?.classList.remove("open");
     panelRef.current?.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
+    document.body.classList.remove("stack-open");
   };
 
   useEffect(() => {

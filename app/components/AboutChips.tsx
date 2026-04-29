@@ -3,11 +3,10 @@
 import { useRef } from "react";
 
 export default function AboutChips() {
-  const referralRef = useRef<HTMLAnchorElement>(null);
+  const referralRef = useRef<HTMLButtonElement>(null);
   const referralSubRef = useRef<HTMLDivElement>(null);
 
-  const handleReferral = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleReferral = () => {
     const url = window.location.href.split("#")[0] + "?ref=forwarded";
     const done = () => {
       referralRef.current?.classList.add("copied");
@@ -30,6 +29,7 @@ export default function AboutChips() {
   return (
     <div className="about-chips">
       <button
+        type="button"
         className="about-chip"
         data-cal-namespace="meeting"
         data-cal-link="nateholt/meeting"
@@ -42,14 +42,14 @@ export default function AboutChips() {
         </div>
         <div className="chip-arrow">→</div>
       </button>
-      <a className="about-chip" href="#" ref={referralRef} onClick={handleReferral}>
+      <button type="button" className="about-chip" ref={referralRef} onClick={handleReferral}>
         <div className="chip-ic">◉</div>
         <div className="chip-body">
           <div className="chip-t">Pass it along.</div>
           <div className="chip-s" ref={referralSubRef}>Copy referral link · forward it</div>
         </div>
         <div className="chip-arrow">→</div>
-      </a>
+      </button>
       <a className="about-chip" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">
         <div className="chip-ic">◑</div>
         <div className="chip-body">

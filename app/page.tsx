@@ -1,8 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
 import Nav from "./components/Nav";
 import HeroChat from "./components/HeroChat";
 import HeroMark from "./components/HeroMark";
-import StackPanel from "./components/StackPanel";
 import UseSection from "./components/UseSection";
 import PresetGrid from "./components/PresetGrid";
 import AboutChips from "./components/AboutChips";
@@ -16,7 +16,6 @@ export default function Home() {
   return (
     <>
       <Nav />
-      <StackPanel />
 
       <div className="hero-bg">
       {/* Latest news strip */}
@@ -83,7 +82,7 @@ export default function Home() {
           <span className="m">2014 → now · 5 roles</span>
         </div>
 
-        <div className="row" tabIndex={0}>
+        <div className="row">
           <div className="yr">2023 — 2025</div>
           <div>
             <div className="co">Thriving Center of Psychology <span className="chev">→</span></div>
@@ -92,14 +91,14 @@ export default function Home() {
             <ul>
               <li><b>4× revenue</b> to $20M with flat headcount</li>
               <li><b>$100K/yr saved</b> via automated contractor payroll (Rippling)</li>
-              <li><b>25% faster time-to-first-session</b> via AI-assisted intake (Tellescope)</li>
+              <li><b>25% faster time-to-first-session</b> via AI-assisted intake (Tellescope) <Link className="case-link" href="/case/onboarding">Read case</Link></li>
               <li>Unified data warehouse across clinical, ops, and marketing</li>
             </ul>
           </div>
           <div className="stack">Rippling<br />Tellescope<br />Segment<br />dbt</div>
         </div>
 
-        <div className="row" tabIndex={0}>
+        <div className="row">
           <div className="yr">2020 — 2023</div>
           <div>
             <div className="co">Thriving Center of Psychology <span className="chev">→</span></div>
@@ -109,7 +108,7 @@ export default function Home() {
           <div className="stack">Webflow<br />Segment<br />Airtable<br />Make</div>
         </div>
 
-        <div className="row" tabIndex={0}>
+        <div className="row">
           <div className="yr">2018 — 2020</div>
           <div>
             <div className="co">Thorsun <span className="chev">→</span></div>
@@ -123,7 +122,7 @@ export default function Home() {
           <div className="stack">Shopify Plus<br />Klaviyo<br />Meta Ads<br />GA4</div>
         </div>
 
-        <div className="row" tabIndex={0}>
+        <div className="row">
           <div className="yr">2014 — 2016</div>
           <div>
             <div className="co">Barneys New York <span className="chev">→</span></div>
@@ -133,7 +132,7 @@ export default function Home() {
           <div className="stack">Demandware<br />ExactTarget</div>
         </div>
 
-        <div className="row" tabIndex={0}>
+        <div className="row">
           <div className="yr">2025 —</div>
           <div>
             <div className="co">Dosable <span className="chev">→</span></div>
@@ -214,7 +213,6 @@ export default function Home() {
             <p>I like problems that sit at the boundary between operational chaos and something a machine can now do well. Onboarding flows, internal tools, ingestion pipelines, the glue between humans and LLMs. The stuff that makes a company feel lighter from the inside.</p>
             <p>Based in New York. Open to senior IC or head-of-product roles — full-time, contract, or advisor. Happiest when I can sit next to engineering and talk to customers the same day.</p>
             <AboutActions />
-            <a className="email-link" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">nathanholt925@gmail.com</a>
             <AboutChips />
           </div>
         </div>
@@ -230,7 +228,7 @@ export default function Home() {
         <PresetGrid />
         <div className="promptbox">
           <div className="q">Or ask your own —</div>
-          <div className="field" style={{ flex: 1, textAlign: "right" }}>Type in the chat at the top ↑</div>
+          <div className="field">Type in the chat at the top ↑</div>
           <KeepGoButton />
         </div>
       </section>
@@ -242,7 +240,7 @@ export default function Home() {
       <footer>
         <div className="footwrap">
           <div className="f-brand">
-            <a className="brand" href="/">Nathan Holt</a>
+            <Link className="brand" href="/">Nathan Holt</Link>
             <div className="b2">Product Lead based in New York. Currently shipping PowSignal.</div>
             <a className="f-avail" href="#about">Open to senior roles</a>
             <FooterLinks />
