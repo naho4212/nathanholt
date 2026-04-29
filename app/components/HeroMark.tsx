@@ -9,14 +9,14 @@ const BUILD  = 18; // seconds
 const STROKES = [
   { d: "M 124 116 C 122 144 122 196 122 256",                            len: 130, label: "DISCOVERY", lx: 80,  ly: 96,  shimmer: 0   },
   { d: "M 122 158 C 124 130 148 116 174 122 C 198 128 208 152 208 178",  len: 160, label: "DEFINE",    lx: 162, ly: 88,  shimmer: 0.7 },
-  { d: "M 208 178 C 208 200 208 230 210 256",                            len: 100, label: "BUILD",     lx: 234, ly: 268, shimmer: 1.4 },
+  { d: "M 208 178 C 208 200 208 230 210 256",                            len: 100, label: "BUILD",     lx: 295, ly: 316, shimmer: 1.4 },
   { d: "M 246 56 C 244 100 244 180 246 256",                             len: 200, label: "VALIDATE",  lx: 290, ly: 60,  shimmer: 2.1 },
   { d: "M 246 158 C 248 130 272 116 298 122 C 322 128 332 152 332 178",  len: 160, label: "LAUNCH",    lx: 360, ly: 88,  shimmer: 2.8 },
-  { d: "M 332 178 C 332 200 332 230 334 256",                            len: 100, label: "ITERATION", lx: 380, ly: 268, shimmer: 3.5 },
+  { d: "M 332 178 C 332 200 332 230 334 256",                            len: 100, label: "ITERATE",   lx: 408, ly: 316, shimmer: 3.5 },
 ] as const;
 
-const CONN_X = [122, 175, 209, 246, 290, 333];
-const CONN_Y = [180, 130, 200, 130, 130, 200];
+const CONN_X = [122, 175, 210, 246, 290, 334];
+const CONN_Y = [180, 130, 252, 130, 130, 252];
 
 export default function HeroMark() {
   const svgRef     = useRef<SVGSVGElement>(null);
@@ -44,7 +44,7 @@ export default function HeroMark() {
       ref={svgRef}
       key={key}
       className="hero-mark"
-      viewBox="10 -40 440 400"
+      viewBox="10 -40 440 420"
       aria-hidden="true"
       style={{ "--build-dur": `${BUILD}s` } as React.CSSProperties}
     >
