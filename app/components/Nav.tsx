@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import posthog from "posthog-js";
 
 function scrollToChat() {
   const el = document.getElementById('heroAskInput');
@@ -202,6 +203,7 @@ export default function Nav() {
                     data-cal-namespace="meeting"
                     data-cal-link="nateholt/meeting"
                     data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
+                    onClick={() => posthog.capture("schedule_call_clicked", { source: "nav_mega" })}
                   ><b>Meeting</b><span>Schedule a call</span></button>
                 </div>
                 <div className="mega-col mega-feat">
@@ -215,7 +217,7 @@ export default function Nav() {
           </nav>
           <div className="nav-right">
             <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <button className="cta-solid" onClick={scrollToChat}>Start a chat</button>
+            <button className="cta-solid" onClick={() => { posthog.capture("start_chat_clicked", { source: "nav_desktop" }); scrollToChat(); }}>Start a chat</button>
             <button
               className="nav-hamburger"
               ref={hamburgerRef}
@@ -270,11 +272,12 @@ export default function Nav() {
           data-cal-namespace="meeting"
           data-cal-link="nateholt/meeting"
           data-cal-config='{"layout":"month_view","useSlotsViewOnSmallScreen":"true","theme":"dark"}'
+          onClick={() => posthog.capture("schedule_call_clicked", { source: "nav_mobile" })}
         ><b>Meeting</b><span>Schedule a call</span></button>
       </aside>
       <div className="mnav-actions" ref={mnavActionsRef}>
         <a className="cta-ghost" href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-        <button className="cta-solid" onClick={() => { closeMnav(); setTimeout(scrollToChat, 350); }}>Start a chat</button>
+        <button className="cta-solid" onClick={() => { posthog.capture("start_chat_clicked", { source: "nav_mobile" }); closeMnav(); setTimeout(scrollToChat, 350); }}>Start a chat</button>
       </div>
     </>
   );

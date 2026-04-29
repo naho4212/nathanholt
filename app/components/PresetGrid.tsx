@@ -1,5 +1,7 @@
 "use client";
 
+import posthog from "posthog-js";
+
 const PRESETS = [
   { category: "Work", text: "What did you actually ship at Thriving Center?", prompt: "What did you actually build at Thriving Center? Walk me through the two biggest wins." },
   { category: "Workflow", text: "How do you use AI day-to-day as a PM?", prompt: "How do you use AI day-to-day as a PM? I want specifics, not vibes." },
@@ -10,7 +12,8 @@ const PRESETS = [
 ];
 
 export default function PresetGrid() {
-  const handlePreset = (prompt: string) => {
+  const handlePreset = (category: string, text: string, prompt: string) => {
+    posthog.capture("chat_preset_clicked", { preset_category: category, preset_text: text });
     if (typeof window !== "undefined" && window.__nhPrefill) {
       window.scrollTo({ top: 0, behavior: "smooth" });
       setTimeout(() => window.__nhPrefill?.(prompt), 420);
@@ -20,7 +23,7 @@ export default function PresetGrid() {
   return (
     <div className="preset-grid">
       {PRESETS.map(({ category, text, prompt }) => (
-        <button key={category} className="preset" onClick={() => handlePreset(prompt)}>
+        <button key={category} className="preset" onClick={() => handlePreset(category, text, prompt)}>
           <span className="pk">{category}</span>
           <span className="pt">{text}</span>
         </button>

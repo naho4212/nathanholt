@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@supabase/supabase-js";
 import fs from "fs";
 import path from "path";
+import { getPostHogClient } from "@/lib/posthog-server";
 
 export const runtime = "nodejs";
 
@@ -97,6 +98,13 @@ export async function POST(req: Request) {
   const { messages, sessionId, visitorId } = await req.json();
 
   if (!Array.isArray(messages) || messages.length === 0) {
+    const posthog = getPostHogClient();
+    posthog.capture({
+      distinctId: visitorId ?? "anonymous",
+      event: "chat_api_error",
+      properties: { reason: "invalid_messages" },
+    });
+    await posthog.shutdown();
     return new Response("Messages are required", { status: 400 });
   }
 
@@ -120,6 +128,18 @@ export async function POST(req: Request) {
   }
 
   const context = await retrieveContext(question);
+
+  const posthog = getPostHogClient();
+  posthog.capture({
+    distinctId: visitorId ?? "anonymous",
+    event: "chat_api_request",
+    properties: {
+      message_count: messages.length,
+      has_context: context.length > 0,
+      session_id: sessionId ?? null,
+    },
+  });
+  posthog.shutdown().catch(() => {});
 
   const systemPrompt = context
     ? `${VOICE_PROMPT}\n\n## Context\n${context}`

@@ -6,8 +6,11 @@ import StackPanel from "./components/StackPanel";
 import UseSection from "./components/UseSection";
 import PresetGrid from "./components/PresetGrid";
 import AboutChips from "./components/AboutChips";
+import AboutActions from "./components/AboutActions";
 import KeepGoButton from "./components/KeepGoButton";
 import FooterStackLink from "./components/FooterStackLink";
+import PowSignalLink from "./components/PowSignalLink";
+import FooterLinks from "./components/FooterLinks";
 
 export default function Home() {
   return (
@@ -153,12 +156,7 @@ export default function Home() {
         </div>
 
         <div className="proj-grid">
-          <a className="proj" href="https://powsignal.com" target="_blank" rel="noopener noreferrer">
-            <div className="proj-status active">In beta</div>
-            <h3 className="proj-title">PowSignal</h3>
-            <p className="proj-desc">AI-powered ski trip planner. Watches storms across 6,000+ resorts and books the window.</p>
-            <div className="proj-tags"><span className="ptag">Claude</span><span className="ptag">Next.js</span><span className="ptag">Supabase</span></div>
-          </a>
+          <PowSignalLink />
           <div className="proj">
             <div className="proj-status active">Advising</div>
             <h3 className="proj-title">Dosable</h3>
@@ -215,11 +213,8 @@ export default function Home() {
             <p>I&apos;m a product lead who still writes code on the weekend. Eight years across healthtech, consumer SaaS, and ecommerce — most recently as Head of Product at Thriving Center of Psychology, where we 4×&apos;d revenue with flat headcount.</p>
             <p>I like problems that sit at the boundary between operational chaos and something a machine can now do well. Onboarding flows, internal tools, ingestion pipelines, the glue between humans and LLMs. The stuff that makes a company feel lighter from the inside.</p>
             <p>Based in New York. Open to senior IC or head-of-product roles — full-time, contract, or advisor. Happiest when I can sit next to engineering and talk to customers the same day.</p>
-            <div className="about-actions">
-              <a className="cta-solid" href="#heroAskInput">Start a chat</a>
-              <a className="cta-ghost" href="/nathan_holt_cv.pdf" download>Resume (PDF) ↓</a>
-              <a className="email-link" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">nathanholt925@gmail.com</a>
-            </div>
+            <AboutActions />
+            <a className="email-link" href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">nathanholt925@gmail.com</a>
             <AboutChips />
           </div>
         </div>
@@ -250,11 +245,7 @@ export default function Home() {
             <a className="brand" href="/">Nathan Holt</a>
             <div className="b2">Product Lead based in New York. Currently shipping PowSignal.</div>
             <a className="f-avail" href="#about">Open to senior roles</a>
-            <div className="apps">
-              <a href="/nathan_holt_cv.pdf" download>Resume</a>
-              <a href="mailto:nathanholt925@gmail.com?subject=Reaching%20out%20from%20your%20site">Email</a>
-              <a href="https://linkedin.com/in/nateholt" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            </div>
+            <FooterLinks />
           </div>
           <div className="fcol">
             <h5>Work</h5>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
+import posthog from "posthog-js";
 
 type Message = { role: "user" | "assistant"; content: string };
 
@@ -44,6 +45,13 @@ export default function HeroChat() {
 
     const userMsg: Message = { role: "user", content: trimmed };
     const history = [...messages, userMsg];
+    const messageNumber = history.filter((m) => m.role === "user").length;
+
+    posthog.capture("chat_message_sent", {
+      message_number: messageNumber,
+      message_length: trimmed.length,
+      session_id: sessionId.current,
+    });
 
     setMessages([...history, { role: "assistant", content: "" }]);
     setInput("");
@@ -197,7 +205,10 @@ export default function HeroChat() {
       {isEmpty && (
         <div className="chips">
           {CHIPS.map(({ label, icon, prompt }) => (
-            <button key={label} className="chip" onClick={() => prefill(prompt)}>
+            <button key={label} className="chip" onClick={() => {
+              posthog.capture("chat_chip_clicked", { chip_label: label });
+              prefill(prompt);
+            }}>
               <span className="mk">{icon}</span>{label}
             </button>
           ))}
